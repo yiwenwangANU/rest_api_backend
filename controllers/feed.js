@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const fs = require("fs");
 
 exports.getPosts = (req, res, next) => {
   res.status(200).json({
@@ -17,14 +18,20 @@ exports.getPosts = (req, res, next) => {
 
 exports.createPost = (req, res, next) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty())
+  if (!errors.isEmpty()) {
+    if (req.file) {
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error("Error removing file:", err);
+      });
+    }
     return res.status(422).json({
       message: "Validation failed, incorrect data!",
       errors: errors.array(),
     });
+  }
   if (!req.file) {
     const error = new Error("No file uploaded!");
-    error.statusCode(422);
+    error.statusCode = 422;
     throw error;
   }
 
