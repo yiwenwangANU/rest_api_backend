@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const fs = require("fs");
+const Post = require("../models/post");
 
 exports.getPosts = (req, res, next) => {
   res.status(200).json({
@@ -39,13 +40,20 @@ exports.createPost = (req, res, next) => {
   const content = req.body.content;
   const imageUrl = req.file.path; // Get the uploaded image file path
 
-  res.status(201).json({
-    message: "Post created successfully!",
-    post: {
-      id: new Date().toISOString(),
-      title: title,
-      content: content,
-      imageUrl: imageUrl,
-    },
+  const post = new Post({
+    title: title,
+    content: content,
+    imageUrl: imageUrl,
+    creator: { name: "Max" },
   });
+  post
+    .save()
+    .then((result) => {
+      console.log(result);
+      res.status(201).json({
+        message: "Post created successfully!",
+        post: result,
+      });
+    })
+    .catch((err) => console.log(err));
 };
