@@ -1,5 +1,4 @@
 const { validationResult } = require("express-validator");
-const fs = require("fs");
 const Post = require("../models/post");
 
 exports.getPosts = (req, res, next) => {
@@ -20,10 +19,24 @@ exports.getPosts = (req, res, next) => {
 exports.createPost = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    if (req.file) {
-      fs.unlink(req.file.path, (err) => {
-        if (err) console.error("Error removing file:", err);
+    if (req.file && req.file.key) {
+      const AWS = require("aws-sdk");
+      AWS.config.update({
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        region: process.env.AWS_REGION,
       });
+      const s3 = new AWS.S3();
+      s3.deleteObject(
+        {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: req.file.key,
+        },
+        (err, data) => {
+          if (err) console.error("Error deleting file from S3:", err);
+          else console.log("Deleted file from S3");
+        }
+      );
     }
     return res.status(422).json({
       message: "Validation failed, incorrect data!",
@@ -38,7 +51,7 @@ exports.createPost = (req, res, next) => {
 
   const title = req.body.title;
   const content = req.body.content;
-  const imageUrl = req.file.path; // Get the uploaded image file path
+  const imageUrl = req.file.location; // Get the uploaded image url from s3
 
   const post = new Post({
     title: title,

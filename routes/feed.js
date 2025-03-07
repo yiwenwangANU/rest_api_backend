@@ -15,9 +15,11 @@ const validatePost = [
     .isLength({ min: 5 })
     .withMessage("Content must be at least 5 characters."),
 ];
+
 // GET /feed/posts
 router.get("/posts", feedController.getPosts);
 
+// POST /feed/posts
 router.post(
   "/posts",
   upload.single("image"), //multer must run before any middleware that reads the request body
