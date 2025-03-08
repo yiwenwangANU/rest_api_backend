@@ -23,7 +23,7 @@ export const createPost = async (req, res, next) => {
     if (!req.file) {
       const error = new Error("No image uploaded!");
       error.statusCode = 422;
-      throw error;
+      next(error);
     }
     // in case of validate failed
     const errors = validationResult(req);
@@ -34,7 +34,7 @@ export const createPost = async (req, res, next) => {
       }
       const error = new Error("Validation failed, entered data is incorrect.");
       error.statusCode = 422;
-      throw error;
+      next(error);
     }
 
     // create post object from req
@@ -55,7 +55,6 @@ export const createPost = async (req, res, next) => {
       post: result,
     });
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };
