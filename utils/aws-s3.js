@@ -1,26 +1,24 @@
-const AWS = require("aws-sdk");
+import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const s3Client = new S3Client({
   region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
 });
 
-const s3 = new AWS.S3();
-
-exports.deleteFile = (filename) => {
-  return new Promise((resolve, reject) => {
-    s3.deleteObject(
-      { Bucket: process.env.AWS_BUCKET_NAME, Key: filename },
-      function (err, data) {
-        if (err) {
-          console.log("Error", err);
-          reject(err);
-        } else {
-          console.log("Success", data);
-          resolve(data);
-        }
-      }
-    );
-  });
+export const deleteFile = async (filename) => {
+  try {
+    const command = new DeleteObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: filename,
+    });
+    const data = await s3Client.send(command);
+    console.log("Success", data);
+    return data;
+  } catch (err) {
+    console.error("Error", err);
+    throw err;
+  }
 };

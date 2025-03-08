@@ -1,9 +1,11 @@
-require("dotenv").config();
-const express = require("express");
-const feedRoutes = require("./routes/feed");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const mongoose = require("mongoose");
+import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
+import feedRoutes from "./routes/feed.js";
+import bodyParser from "body-parser";
+import cors from "cors";
+import mongoose from "mongoose";
 
 const app = express();
 

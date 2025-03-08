@@ -1,7 +1,7 @@
-const express = require("express");
-const feedController = require("../controllers/feed");
-const { body } = require("express-validator");
-const upload = require("../middlewares/multer-config");
+import express from "express";
+import feedController from "../controllers/feed.js";
+import { body } from "express-validator";
+import upload from "../middlewares/multer-config.js";
 
 const router = express.Router();
 
@@ -27,4 +27,4 @@ router.post(
   feedController.createPost
 );
 
-module.exports = router;
+export default router;
