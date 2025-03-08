@@ -17,9 +17,18 @@ exports.getPosts = (req, res, next) => {
 };
 
 exports.createPost = (req, res, next) => {
+  if (!req.file) {
+    const error = new Error("No image uploaded!");
+    error.statusCode = 422;
+    throw error;
+  }
+  // if the validation failed, but image already been uploaded
+  // delete the image and return 422 response
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    if (req.file && req.file.key) {
+    const error = new Error("Validation failed, entered data is incorrect.");
+    error.statusCode = 422;
+    if (req.file) {
       const AWS = require("aws-sdk");
       AWS.config.update({
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -38,14 +47,6 @@ exports.createPost = (req, res, next) => {
         }
       );
     }
-    return res.status(422).json({
-      message: "Validation failed, incorrect data!",
-      errors: errors.array(),
-    });
-  }
-  if (!req.file) {
-    const error = new Error("No file uploaded!");
-    error.statusCode = 422;
     throw error;
   }
 
