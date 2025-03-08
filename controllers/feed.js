@@ -37,6 +37,7 @@ export const createPost = async (req, res, next) => {
       throw error;
     }
 
+    // create post object from req
     const title = req.body.title;
     const content = req.body.content;
     const imageUrl = req.file.location; // Get the uploaded image url from s3
@@ -47,6 +48,7 @@ export const createPost = async (req, res, next) => {
       imageUrl: imageUrl,
       creator: { name: "Max" },
     });
+    // insert object into mongodb
     const result = await post.save();
     res.status(201).json({
       message: "Post created successfully!",

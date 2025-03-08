@@ -6,6 +6,7 @@ import feedRoutes from "./routes/feed.js";
 import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 
@@ -18,6 +19,9 @@ app.use(
   })
 );
 app.use("/feed", feedRoutes); // Handles actual routes last, after all necessary middleware.
+
+// Centralized error handling middleware (must be after routes)
+app.use(errorHandler);
 
 mongoose
   .connect(process.env.MONGOOSE_CONNECTION_STRING)
