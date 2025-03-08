@@ -16,8 +16,11 @@ const validatePost = [
     .withMessage("Content must be at least 5 characters."),
 ];
 
-// GET /feed/posts
+// GET posts
 router.get("/posts", feedController.getPosts);
+
+// GET single post
+router.get("/post/:postId", feedController.getPost);
 
 // POST /feed/posts
 router.post(

@@ -2,19 +2,35 @@ import { validationResult } from "express-validator";
 import Post from "../models/post.js";
 import { deleteFile } from "../utils/aws-s3.js";
 
-export const getPosts = (req, res, next) => {
-  res.status(200).json({
-    posts: [
-      {
-        _id: "001",
-        title: "First Post",
-        content: "First Content",
-        imageUrl: "images/dummy_image.jpg",
-        creator: { name: "Max" },
-        date: new Date(),
-      },
-    ],
-  });
+export const getPosts = async (req, res, next) => {
+  try {
+    const posts = await Post.find();
+    console.log(posts);
+    res.status(200).json({ posts: posts });
+  } catch {
+    (err) => {
+      if (!err.statusCode) err.statusCode = 500;
+      next(err);
+    };
+  }
+};
+
+export const getPost = async (req, res, next) => {
+  const postId = req.params.postId;
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      const error = new Error("Post not found!");
+      error.statusCode = 404;
+      next(error);
+    }
+    res.status(200).json({ post: post });
+  } catch {
+    (err) => {
+      if (!err.statusCode) err.statusCode = 500;
+      next(err);
+    };
+  }
 };
 
 export const createPost = async (req, res, next) => {
@@ -59,4 +75,4 @@ export const createPost = async (req, res, next) => {
   }
 };
 
-export default { getPosts, createPost };
+export default { getPosts, getPost, createPost };
