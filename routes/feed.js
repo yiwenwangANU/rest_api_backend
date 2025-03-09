@@ -30,4 +30,5 @@ router.post(
   feedController.createPost
 );
 
+router.put("/post/:postId");
 export default router;

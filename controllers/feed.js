@@ -56,11 +56,13 @@ export const createPost = async (req, res, next) => {
     // create post object from req
     const title = req.body.title;
     const content = req.body.content;
+    const key = req.file.key; // key is the file name
     const imageUrl = req.file.location; // Get the uploaded image url from s3
 
     const post = new Post({
       title: title,
       content: content,
+      key: key,
       imageUrl: imageUrl,
       creator: { name: "Max" },
     });
@@ -75,4 +77,46 @@ export const createPost = async (req, res, next) => {
   }
 };
 
-export default { getPosts, getPost, createPost };
+export const updatePost = async (req, res, next) => {
+  const postId = req.params.postId;
+  try {
+    // in case of validate failed
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // Delete the file from S3 if validation fails.
+      if (req.file && req.file.key) {
+        await deleteFile(req.file.key);
+      }
+      const error = new Error("Validation failed, entered data is incorrect.");
+      error.statusCode = 422;
+      return next(error);
+    }
+
+    // find post by postId and update with req body and file
+    const post = await Post.findById(postId);
+    if (!post) {
+      const error = new Error("Post not found!");
+      error.statusCode = 404;
+      return next(error);
+    }
+    post.title = req.body.title;
+    post.content = req.body.content;
+    if (req.file && post.key) {
+      // if there is a new image upload
+      await deleteFile(post.key); //delete old image from s3
+      post.key = req.file.key; // set new key and imageUrl
+      post.imageUrl = req.file.location;
+    }
+
+    // insert object into mongodb
+    const result = await post.save();
+    res.status(200).json({
+      message: "Post updated successfully!",
+      post: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { getPosts, getPost, createPost, updatePost };
