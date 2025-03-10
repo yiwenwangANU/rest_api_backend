@@ -21,7 +21,7 @@ export const getPost = async (req, res, next) => {
     if (!post) {
       const error = new Error("Post not found!");
       error.statusCode = 404;
-      next(error);
+      return next(error);
     }
     res.status(200).json({ post: post });
   } catch {
@@ -38,7 +38,7 @@ export const createPost = async (req, res, next) => {
     if (!req.file) {
       const error = new Error("No image uploaded!");
       error.statusCode = 422;
-      next(error);
+      return next(error);
     }
     // in case of validate failed
     const errors = validationResult(req);
@@ -118,4 +118,26 @@ export const updatePost = async (req, res, next) => {
   }
 };
 
-export default { getPosts, getPost, createPost, updatePost };
+export const deletePost = async (req, res, next) => {
+  const postId = req.params.postId;
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      const error = new Error("Post not found!");
+      error.statusCode = 404;
+      return next(error);
+    }
+    if (post.key) {
+      await deleteFile(post.key); // delete image from s3
+    }
+    await post.deleteOne(); // delete from database
+    res.status(200).json({ post: post });
+  } catch {
+    (err) => {
+      if (!err.statusCode) err.statusCode = 500;
+      next(err);
+    };
+  }
+};
+
+export default { getPosts, getPost, createPost, updatePost, deletePost };
