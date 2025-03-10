@@ -5,7 +5,6 @@ import { deleteFile } from "../utils/aws-s3.js";
 export const getPosts = async (req, res, next) => {
   try {
     const posts = await Post.find();
-    console.log(posts);
     res.status(200).json({ posts: posts });
   } catch {
     (err) => {
@@ -91,8 +90,8 @@ export const updatePost = async (req, res, next) => {
       error.statusCode = 422;
       return next(error);
     }
-
     // find post by postId and update with req body and file
+
     const post = await Post.findById(postId);
     if (!post) {
       const error = new Error("Post not found!");

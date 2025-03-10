@@ -30,5 +30,10 @@ router.post(
   feedController.createPost
 );
 
-router.put("/post/:postId");
+router.put(
+  "/post/:postId",
+  upload.single("image"), //multer must run before any middleware that reads the request body
+  validatePost,
+  feedController.updatePost
+);
 export default router;

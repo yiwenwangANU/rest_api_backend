@@ -13,11 +13,9 @@ const postSchema = new Schema(
     },
     key: {
       type: String,
-      required: true,
     },
     imageUrl: {
       type: String,
-      required: true,
     },
     creator: {
       type: Object,
