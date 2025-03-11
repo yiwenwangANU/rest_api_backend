@@ -3,9 +3,20 @@ import Post from "../models/post.js";
 import { deleteFile } from "../utils/aws-s3.js";
 
 export const getPosts = async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 5; // Set your desired page size
+  const skip = (page - 1) * pageSize; // Skip first * posts for pagination
   try {
-    const posts = await Post.find();
-    res.status(200).json({ posts: posts });
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize);
+
+    const totalPosts = await Post.countDocuments();
+    const totalPages = Math.ceil(totalPosts / pageSize);
+    const nextPage = page < totalPages ? page + 1 : null;
+    console.log(posts);
+    res.status(200).json({ posts, currentPage: page, nextPage });
   } catch {
     (err) => {
       if (!err.statusCode) err.statusCode = 500;
