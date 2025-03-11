@@ -16,7 +16,7 @@ export const getPosts = async (req, res, next) => {
     const totalPages = Math.ceil(totalPosts / pageSize);
     const nextPage = page < totalPages ? page + 1 : null;
     console.log(posts);
-    res.status(200).json({ posts, currentPage: page, nextPage });
+    res.status(200).json({ posts, nextPage });
   } catch {
     (err) => {
       if (!err.statusCode) err.statusCode = 500;
@@ -45,17 +45,11 @@ export const getPost = async (req, res, next) => {
 
 export const createPost = async (req, res, next) => {
   try {
-    // in case of no image in req
-    if (!req.file) {
-      const error = new Error("No image uploaded!");
-      error.statusCode = 422;
-      return next(error);
-    }
     // in case of validate failed
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // Delete the file from S3 if validation fails.
-      if (req.file && req.file.key) {
+      if (req.file && req.file?.key) {
         await deleteFile(req.file.key);
       }
       // Get error message from validator
@@ -74,8 +68,8 @@ export const createPost = async (req, res, next) => {
     // create post object from req
     const title = req.body.title;
     const content = req.body.content;
-    const key = req.file.key; // key is the file name
-    const imageUrl = req.file.location; // Get the uploaded image url from s3
+    const key = req.file?.key; // key is the file name
+    const imageUrl = req.file?.location; // Get the uploaded image url from s3
 
     const post = new Post({
       title: title,
