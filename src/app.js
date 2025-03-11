@@ -2,7 +2,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import feedRoutes from "./routes/feed.js";
+import postRoutes from "./routes/postRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
@@ -18,7 +19,8 @@ app.use(
     allowedHeaders: "Content-Type, Authorization",
   })
 );
-app.use("/feed", feedRoutes); // Handles actual routes last, after all necessary middleware.
+app.use("/feed", postRoutes); // Handles actual routes last, after all necessary middleware.
+app.use("/auth", authRoutes);
 
 // Centralized error handling middleware (must be after routes)
 app.use(errorHandler);

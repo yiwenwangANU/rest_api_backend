@@ -1,5 +1,5 @@
 import express from "express";
-import feedController from "../controllers/feed.js";
+import postController from "../controllers/postController.js";
 import { body } from "express-validator";
 import upload from "../middlewares/multer-config.js";
 
@@ -17,26 +17,26 @@ const validatePost = [
 ];
 
 // GET posts
-router.get("/posts", feedController.getPosts);
+router.get("/posts", postController.getPosts);
 
 // GET single post
-router.get("/post/:postId", feedController.getPost);
+router.get("/post/:postId", postController.getPost);
 
 // POST /feed/posts
 router.post(
   "/posts",
   upload.single("image"), //multer must run before any middleware that reads the request body
   validatePost,
-  feedController.createPost
+  postController.createPost
 );
 
 router.put(
   "/post/:postId",
   upload.single("image"), //multer must run before any middleware that reads the request body
   validatePost,
-  feedController.updatePost
+  postController.updatePost
 );
 
-router.delete("/post/:postId", feedController.deletePost);
+router.delete("/post/:postId", postController.deletePost);
 
 export default router;

@@ -15,7 +15,6 @@ export const getPosts = async (req, res, next) => {
     const totalPosts = await Post.countDocuments();
     const totalPages = Math.ceil(totalPosts / pageSize);
     const nextPage = page < totalPages ? page + 1 : null;
-    console.log(posts);
     res.status(200).json({ posts, nextPage });
   } catch {
     (err) => {
