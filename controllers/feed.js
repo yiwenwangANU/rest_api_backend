@@ -47,9 +47,17 @@ export const createPost = async (req, res, next) => {
       if (req.file && req.file.key) {
         await deleteFile(req.file.key);
       }
-      const error = new Error("Validation failed, entered data is incorrect.");
+      // Get error message from validator
+      const errorMessages = errors
+        .array()
+        .map((err) => err.msg)
+        .join(" ");
+
+      const error = new Error(
+        errorMessages || "Validation failed, entered data is incorrect."
+      );
       error.statusCode = 422;
-      next(error);
+      return next(error);
     }
 
     // create post object from req

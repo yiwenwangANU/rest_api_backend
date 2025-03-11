@@ -30,8 +30,13 @@ const upload = multer({
     ) {
       cb(null, true);
     } else {
-      cb(null, false);
+      const error = new Error("Only .png, .jpg and .jpeg formats are allowed!");
+      error.statusCode = 422;
+      cb(error, false);
     }
+  },
+  limits: {
+    fileSize: 2 * 2024 * 2024, // Limit file size to 2MB
   },
 });
 
