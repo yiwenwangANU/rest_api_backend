@@ -1,8 +1,10 @@
 import { validationResult } from "express-validator";
+import bcrypt from "bcrypt";
 import User from "../models/user.js";
 import { deleteFile } from "../utils/aws-s3.js";
 
 export const signup = async (req, res, next) => {
+  console.log(req.body);
   try {
     // in case of validate failed
     const errors = validationResult(req);
@@ -31,12 +33,14 @@ export const signup = async (req, res, next) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+    const name = req.body.name;
     const key = req.file?.key; // key is the file name
     const thumbNailUrl = req.file?.location; // Get the uploaded image url from s3
 
     const user = new User({
       email: email,
       password: hashedPassword,
+      name: name,
       key: key,
       thumbnailUrl: thumbNailUrl,
       status: "offline",

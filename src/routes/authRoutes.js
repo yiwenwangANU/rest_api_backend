@@ -1,6 +1,7 @@
 import express from "express";
 import { body } from "express-validator";
 import authController from "../controllers/authController.js";
+import upload from "../middlewares/multer-config.js";
 
 const validateUser = [
   body("email").isEmail().withMessage("Please enter a valid email."),
@@ -12,6 +13,11 @@ const validateUser = [
 
 const router = express.Router();
 
-router.post("/signup", validateUser, authController.signup);
+router.post(
+  "/signup",
+  upload.single("image"),
+  validateUser,
+  authController.signup
+);
 
 export default router;
