@@ -14,6 +14,8 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  thumbnailUrl: { type: String },
+  key: { type: String },
   status: {
     type: String,
     required: true,
