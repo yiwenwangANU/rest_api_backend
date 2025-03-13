@@ -2,6 +2,7 @@ import express from "express";
 import postController from "../controllers/postController.js";
 import { body } from "express-validator";
 import upload from "../middlewares/multer-config.js";
+import { checkAuth } from "../middlewares/checkAuth.js";
 
 const router = express.Router();
 
@@ -37,6 +38,6 @@ router.put(
   postController.updatePost
 );
 
-router.delete("/post/:postId", postController.deletePost);
+router.delete("/post/:postId", checkAuth, postController.deletePost);
 
 export default router;
