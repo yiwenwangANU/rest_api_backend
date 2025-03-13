@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import Post from "../models/post.js";
+import User from "../models/user.js";
 import { deleteFile } from "../utils/aws-s3.js";
 
 export const getPosts = async (req, res, next) => {
@@ -69,19 +70,28 @@ export const createPost = async (req, res, next) => {
     const content = req.body.content;
     const key = req.file?.key; // key is the file name
     const imageUrl = req.file?.location; // Get the uploaded image url from s3
+    const userId = req.userId; // Get userId from token
 
     const post = new Post({
       title: title,
       content: content,
       key: key,
       imageUrl: imageUrl,
-      creator: { name: "Max" },
+      creator: userId,
     });
+    let creator;
     // insert object into mongodb
     const result = await post.save();
+    // add post to user posts
+    const user = await User.findById(userId);
+    creator = user;
+    user.posts.push(post);
+    await user.save();
+
     res.status(201).json({
       message: "Post created successfully!",
       post: result,
+      creator: { _id: creator._id, name: creator.name },
     });
   } catch (err) {
     next(err);
