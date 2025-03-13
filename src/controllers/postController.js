@@ -120,6 +120,12 @@ export const updatePost = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
+    // user can only update his own post
+    if (post.creator.toString() !== req.userId) {
+      const error = new Error("Not authorized!");
+      error.statusCode = 403;
+      return next(error);
+    }
     post.title = req.body.title;
     post.content = req.body.content;
     if (req.file && post.key) {
@@ -147,6 +153,12 @@ export const deletePost = async (req, res, next) => {
     if (!post) {
       const error = new Error("Post not found!");
       error.statusCode = 404;
+      return next(error);
+    }
+    // user can only delete his own post
+    if (post.creator.toString() !== req.userId) {
+      const error = new Error("Not authorized!");
+      error.statusCode = 403;
       return next(error);
     }
     if (post.key) {
