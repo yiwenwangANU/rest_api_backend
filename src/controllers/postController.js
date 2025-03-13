@@ -165,6 +165,9 @@ export const deletePost = async (req, res, next) => {
       await deleteFile(post.key); // delete image from s3
     }
     await post.deleteOne(); // delete from database
+    const user = await User.findById(req.userId); // delete post from user post list
+    user.posts.pull(postId);
+    await user.save();
     res.status(200).json({ post: post });
   } catch {
     (err) => {
