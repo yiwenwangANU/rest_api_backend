@@ -26,6 +26,7 @@ router.get("/post/:postId", postController.getPost);
 // POST /feed/posts
 router.post(
   "/posts",
+  checkAuth,
   upload.single("image"), //multer must run before any middleware that reads the request body
   validatePost,
   postController.createPost
@@ -33,6 +34,7 @@ router.post(
 
 router.put(
   "/post/:postId",
+  checkAuth,
   upload.single("image"), //multer must run before any middleware that reads the request body
   validatePost,
   postController.updatePost
