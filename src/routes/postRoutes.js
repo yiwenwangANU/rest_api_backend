@@ -51,4 +51,6 @@ router.post(
   postController.createComment
 );
 
+router.get("/comment/:postId", postController.getComments);
+
 export default router;

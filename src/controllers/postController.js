@@ -225,6 +225,20 @@ export const createComment = async (req, res, next) => {
     next(err);
   }
 };
+export const getComments = async (req, res, next) => {
+  const postId = req.params.postId;
+  try {
+    const comments = await Comment.find({ post: postId })
+      .populate("author", "name thumbnailUrl")
+      .sort({ createdAt: -1 });
+    res.status(200).json({ comments });
+  } catch {
+    (err) => {
+      if (!err.statusCode) err.statusCode = 500;
+      next(err);
+    };
+  }
+};
 
 export default {
   getPosts,
@@ -233,4 +247,5 @@ export default {
   updatePost,
   deletePost,
   createComment,
+  getComments,
 };
