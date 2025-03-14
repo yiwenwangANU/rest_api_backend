@@ -28,7 +28,7 @@ export const signup = async (req, res, next) => {
     }
 
     // create post object from req
-    const email = req.body.email;
+    const email = req.body.email.toLowerCase();
     const password = req.body.password;
     // Hash the password with bcrypt
     const saltRounds = 10;
@@ -60,7 +60,7 @@ export const signup = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     // get email and password from req
-    const email = req.body.email;
+    const email = req.body.email.toLowerCase();
     const password = req.body.password;
 
     // check if there is any user using that email
