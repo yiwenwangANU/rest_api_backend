@@ -11,10 +11,6 @@ const validatePost = [
     .trim()
     .isLength({ min: 5 })
     .withMessage("Title must be at least 5 characters."),
-  body("content")
-    .trim()
-    .isLength({ min: 5 })
-    .withMessage("Content must be at least 5 characters."),
 ];
 
 const validateComment = [
