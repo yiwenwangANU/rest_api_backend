@@ -9,6 +9,7 @@ export const getPosts = async (req, res, next) => {
   const skip = (page - 1) * pageSize; // Skip first * posts for pagination
   try {
     const posts = await Post.find()
+      .populate("creator", "name thumbnailUrl")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(pageSize);
@@ -28,7 +29,10 @@ export const getPosts = async (req, res, next) => {
 export const getPost = async (req, res, next) => {
   const postId = req.params.postId;
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate(
+      "creator",
+      "name thumbnailUrl"
+    );
     if (!post) {
       const error = new Error("Post not found!");
       error.statusCode = 404;
