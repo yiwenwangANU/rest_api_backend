@@ -76,14 +76,12 @@ export const createPost = async (req, res, next) => {
 
     // create post object from req
     const title = req.body.title;
-    const content = req.body.content;
     const key = req.file?.key; // key is the file name
     const imageUrl = req.file?.location; // Get the uploaded image url from s3
     const userId = req.userId; // Get userId from token
 
     const post = new Post({
       title: title,
-      content: content,
       key: key,
       imageUrl: imageUrl,
       creator: userId,
@@ -136,7 +134,6 @@ export const updatePost = async (req, res, next) => {
       return next(error);
     }
     post.title = req.body.title;
-    post.content = req.body.content;
     if (req.file && post.key) {
       // if there is a new image upload
       await deleteFile(post.key); //delete old image from s3
