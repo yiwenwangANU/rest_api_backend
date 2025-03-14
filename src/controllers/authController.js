@@ -90,6 +90,7 @@ export const login = async (req, res, next) => {
       message: "User login successfully!",
       token: token,
       userId: user._id.toString(),
+      thumbNail: user.thumbnailUrl,
     });
   } catch (err) {
     next(err);
