@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import Post from "../models/post.js";
 import User from "../models/user.js";
+import Comment from "../models/comment.js";
 import { deleteFile } from "../utils/aws-s3.js";
 
 export const getPosts = async (req, res, next) => {
@@ -38,7 +39,11 @@ export const getPost = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
-    res.status(200).json({ post: post });
+    const comments = await Comment.find({ post: postId })
+      .populate("author", "name thumbnailUrl")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ post: post, comments: comments });
   } catch {
     (err) => {
       if (!err.statusCode) err.statusCode = 500;
