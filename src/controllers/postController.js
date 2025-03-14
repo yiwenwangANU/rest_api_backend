@@ -186,4 +186,54 @@ export const deletePost = async (req, res, next) => {
   }
 };
 
-export default { getPosts, getPost, createPost, updatePost, deletePost };
+export const createComment = async (req, res, next) => {
+  const postId = req.params.postId;
+  const userId = req.userId;
+  try {
+    // in case of validate failed
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // Get error message from validator
+      const errorMessages = errors
+        .array()
+        .map((err) => err.msg)
+        .join(" ");
+
+      const error = new Error(
+        errorMessages || "Validation failed, entered data is incorrect."
+      );
+      error.statusCode = 422;
+      return next(error);
+    }
+
+    // create post object from req
+    const content = req.body.content;
+    const author = userId;
+    const post = postId;
+
+    const comment = new Comment({
+      content: content,
+      author: author,
+      post: post,
+    });
+    let creator;
+    // insert object into mongodb
+    const result = await comment.save();
+
+    res.status(201).json({
+      message: "Comment created successfully!",
+      comment: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default {
+  getPosts,
+  getPost,
+  createPost,
+  updatePost,
+  deletePost,
+  createComment,
+};

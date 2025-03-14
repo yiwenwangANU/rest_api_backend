@@ -17,6 +17,12 @@ const validatePost = [
     .withMessage("Content must be at least 5 characters."),
 ];
 
+const validateComment = [
+  body("comment")
+    .trim()
+    .isLength({ min: 5 })
+    .withMessage("Title must be at least 5 characters."),
+];
 // GET posts
 router.get("/posts", postController.getPosts);
 
@@ -41,5 +47,12 @@ router.put(
 );
 
 router.delete("/post/:postId", checkAuth, postController.deletePost);
+
+router.post(
+  "/comment/:postId",
+  checkAuth,
+  validateComment,
+  postController.createComment
+);
 
 export default router;
