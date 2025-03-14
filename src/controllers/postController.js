@@ -184,7 +184,7 @@ export const deletePost = async (req, res, next) => {
 };
 
 export const createComment = async (req, res, next) => {
-  const postId = req.params.postId;
+  const postId = req.body.postId;
   const userId = req.userId;
   try {
     // in case of validate failed

@@ -14,10 +14,10 @@ const validatePost = [
 ];
 
 const validateComment = [
-  body("comment")
+  body("content")
     .trim()
-    .isLength({ min: 5 })
-    .withMessage("Title must be at least 5 characters."),
+    .isLength({ min: 1 })
+    .withMessage("Comment must be at least 1 character."),
 ];
 // GET posts
 router.get("/posts", postController.getPosts);
@@ -45,7 +45,7 @@ router.put(
 router.delete("/post/:postId", checkAuth, postController.deletePost);
 
 router.post(
-  "/comment/:postId",
+  "/comment",
   checkAuth,
   validateComment,
   postController.createComment
