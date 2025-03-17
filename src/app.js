@@ -31,5 +31,9 @@ app.use(errorHandler);
 
 mongoose
   .connect(process.env.MONGOOSE_CONNECTION_STRING)
-  .then((result) => app.listen(8080))
+  .then((result) =>
+    app.listen(8080, "0.0.0.0", () => {
+      console.log("Server running on port 8080");
+    })
+  )
   .catch((err) => console.log(err));
