@@ -197,7 +197,7 @@ export const createComment = async (req, res, next) => {
         .join(" ");
 
       const error = new Error(
-        errorMessages || "Validation failed, entered data is incorrect."
+        errorMessages || "Validation failed, entered data is incorrect!"
       );
       error.statusCode = 422;
       return next(error);
