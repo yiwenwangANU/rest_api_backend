@@ -19,6 +19,10 @@ app.use(
     allowedHeaders: "Content-Type, Authorization",
   })
 );
+// for ALB health check
+app.get("/health", (req, res) => {
+  res.sendStatus(200); // returns HTTP 200 OK
+});
 app.use("/feed", postRoutes); // Handles actual routes last, after all necessary middleware.
 app.use("/auth", authRoutes);
 
