@@ -90,7 +90,7 @@ export const login = async (req, res, next) => {
       message: "User login successfully!",
       token: token,
       userId: user._id.toString(),
-      thumbNail: user.thumbnailUrl,
+      thumbNail: user.thumbnailUrl || DEFAULT_THUMBNAIL,
     });
   } catch (err) {
     next(err);
