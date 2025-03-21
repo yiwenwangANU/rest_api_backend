@@ -65,14 +65,36 @@ For the security and high-availability, the API was deploy in the private subnet
 
 The API implement CI/CD using AWS CodePipeline. It detects changes in this Git repository and triggers the pipeline. After that, CodeBuild will compile the code, builds a Docker image, and pushes that image to Amazon ECR. Then it will update the ECS service to use the new image.
 
-For detailed instructions, see the[AWS Deployment Guide](./AWS_Deployment.md) 🚀.
+For detailed instructions, see the [AWS Deployment Guide](./AWS_Deployment.md).
 
-## NPM Packages used
+## NPM Packages used 📦
 
-- body-parser: for json transimission
-- cors: for cors head
-- dotenv: for environment variable
-- express-validator:
-- express
-- mongoose:
-- multer: for receiving multi-form data
+- **body-parser:**  
+  Parses incoming request bodies in middleware, facilitating JSON transmission.
+
+- **cors:**  
+  Enables Cross-Origin Resource Sharing (CORS) for secure cross-site requests.
+
+- **dotenv:**  
+  Loads environment variables from a `.env` file, simplifying configuration management.
+
+- **express-validator:**  
+  Provides middleware for validating incoming requests with various rules.
+
+- **mongoose:**  
+  An ODM (Object Data Modeling) library for MongoDB, enabling schema-based data modeling.
+
+- **multer:**  
+  Handles multipart/form-data for receiving file uploads in forms.
+
+- **@aws-sdk/client-s3:**  
+  AWS SDK for JavaScript v3 to interact with AWS S3 for image and file storage.
+
+- **bcrypt:**  
+  A library for hashing passwords to enhance security.
+
+- **jsonwebtoken:**  
+  Implements JSON Web Tokens (JWT) for authentication and secure API communication.
+
+- **multer-s3:**  
+  Integrates multer with AWS S3 to store uploaded files directly in an S3 bucket.
